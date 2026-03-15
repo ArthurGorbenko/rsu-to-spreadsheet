@@ -2,7 +2,9 @@
 
 `rsu-extract` converts saved Morgan Stanley at Work / Solium sale pages into a structured CSV or an accountant-style Excel workbook.
 
-The project is intentionally HTML-only. Saved HTML pages preserve wash-sale tooltip data that the PDF versions drop, especially the original acquisition date and original cost basis for `H` rows.
+Morgan Stanley sale records are built for U.S. tax reporting and are painful to use for Canadian taxes. The main problem is that the broker view applies IRS-specific concepts like wash-sale adjustments, even though those rules do not apply the same way in Canada. For Canadian tax work, you often need the original lot basis rather than the adjusted U.S. number.
+
+This project uses saved HTML pages because they preserve the hidden `H` tooltip data that the PDFs drop, including the original acquisition date and original cost basis per share.
 
 ## What It Does
 
@@ -42,14 +44,6 @@ If the output ends with `.xlsx`, the script creates:
   - net proceeds
   - currency
   - converted net proceeds (CAD)
-
-## What The Script Does Not Do
-
-- It does not parse PDFs anymore.
-- It does not calculate full Canadian tax returns.
-- It does not reconcile payroll / T4 / employment-income reporting for RSU or ESPP acquisition events.
-
-This repo is best understood as a sale-side ledger generator. It helps produce the disposition-side numbers your accountant needs, but it is not a complete equity-tax engine.
 
 ## Setup
 
