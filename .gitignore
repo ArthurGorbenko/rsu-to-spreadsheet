@@ -1,0 +1,4 @@
+stock-sales.xlsx
+~$stock-sales.xlsx
+__pycache__/
+*.pyc

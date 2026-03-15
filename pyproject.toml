@@ -1,0 +1,22 @@
+[project]
+name = "rsu-extract"
+version = "0.1.0"
+description = "Extract Morgan Stanley at Work / Solium RSU sale PDFs into CSV."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "beautifulsoup4>=4.13.4",
+  "openpyxl>=3.1.5",
+]
+
+[project.scripts]
+rsu-extract = "rsu_extract.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.4.2",
+]
