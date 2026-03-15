@@ -69,6 +69,10 @@ uv run rsu-extract extract \
   --output stock-sales.xlsx
 ```
 
+## Example Files
+
+See [examples/README.md](/Users/arthur/Documents/rsu-to-spreadsheet/examples/README.md) for a synthetic saved sale page and generated example outputs.
+
 ## Output Columns
 
 For CSV output, the script writes one row per acquisition lot with these columns:
