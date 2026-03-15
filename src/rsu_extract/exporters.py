@@ -1,3 +1,4 @@
+git push -u origin main
 from __future__ import annotations
 
 from collections import OrderedDict

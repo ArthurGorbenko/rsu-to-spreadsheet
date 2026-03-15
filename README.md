@@ -1,6 +1,55 @@
 # rsu-extract
 
-CLI tool to extract Morgan Stanley at Work / Solium stock sale data from saved HTML pages into a normalized USD CSV or an accountant-style workbook.
+`rsu-extract` converts saved Morgan Stanley at Work / Solium sale pages into a structured CSV or an accountant-style Excel workbook.
+
+The project is intentionally HTML-only. Saved HTML pages preserve wash-sale tooltip data that the PDF versions drop, especially the original acquisition date and original cost basis for `H` rows.
+
+## What It Does
+
+Given one saved sale page or a folder of saved sale pages, the script:
+
+- extracts transaction-level sale details
+- extracts lot-level cost basis rows
+- handles `H` wash-sale rows by using the original values from the HTML tooltip
+- calculates lot-level totals such as:
+  - total cost basis
+  - total sale proceeds
+  - gain or loss
+- writes either:
+  - a normalized CSV with one row per lot, or
+  - an Excel workbook formatted for accountant review
+
+## What The Workbook Contains
+
+If the output ends with `.xlsx`, the script creates:
+
+- `Sales Breakdown`
+  - grouped by transaction date
+  - lot rows under each transaction
+  - formulas for total cost basis, total sale proceeds, and gain/loss
+  - an overall totals block at the end for:
+    - total shares sold
+    - total cost basis
+    - total sale proceeds
+    - total gain/loss
+- `Transaction Breakdown`
+  - one row per transaction
+  - transaction date
+  - shares sold
+  - price per share
+  - gross proceeds
+  - fees
+  - net proceeds
+  - currency
+  - converted net proceeds (CAD)
+
+## What The Script Does Not Do
+
+- It does not parse PDFs anymore.
+- It does not calculate full Canadian tax returns.
+- It does not reconcile payroll / T4 / employment-income reporting for RSU or ESPP acquisition events.
+
+This repo is best understood as a sale-side ledger generator. It helps produce the disposition-side numbers your accountant needs, but it is not a complete equity-tax engine.
 
 ## Setup
 
@@ -16,9 +65,9 @@ uv run rsu-extract extract \
   --output output.csv
 ```
 
-You can also point `--input` at a folder. All matching `.html` and `.htm` files are appended into one CSV or workbook.
+You can also point `--input` at a folder. All matching `.html` and `.htm` files are processed and appended into one output file.
 
-To generate an accountant-style workbook with grouped lot sections and transaction formulas:
+To generate the accountant workbook:
 
 ```bash
 uv run rsu-extract extract \
@@ -27,6 +76,8 @@ uv run rsu-extract extract \
 ```
 
 ## Output Columns
+
+For CSV output, the script writes one row per acquisition lot with these columns:
 
 - `sale_date`
 - `settlement_date`
@@ -41,11 +92,16 @@ uv run rsu-extract extract \
 - `fees_usd`
 - `net_proceeds_usd`
 
+## Input Expectations
+
+- Input files should be saved Morgan Stanley at Work / Solium sale pages.
+- The HTML should include the rendered transaction details page, not just a partial snippet.
+- For `H` rows, the saved HTML must still contain the hidden popover content for:
+  - `Original acquisition date`
+  - `Original cost basis per share`
+
 ## Notes
 
-- The CSV is one row per acquisition lot sold.
-- If the output path ends in `.xlsx`, the tool writes:
-  - `Sales Breakdown`: grouped by transaction date with lot rows and subtotal formulas
-  - `Transaction Breakdown`: one row per transaction with fees and net proceeds at the transaction level
-- This tool targets saved Morgan Stanley at Work / Solium sale HTML pages.
-- HTML is the preferred source because it preserves wash-sale tooltip data such as original acquisition date and original cost basis per share.
+- HTML is the preferred source because it preserves wash-sale tooltip data that matters for basis reconstruction.
+- The workbook formulas are there for review and handoff, not as a substitute for professional tax advice.
+- If you have both HTML and another export for the same transaction, avoid mixing them in the same run unless you want duplicate rows.
